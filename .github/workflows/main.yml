@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  # The build job can have its time improved if using the actions/cache
+  # See https://github.com/actions/cache
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Install application dependencies
+        run: bundle install
+
+      # The docker-compose could be replaced by Action's services.
+      #
+      # services:
+      #   db:
+      #     image: postgres:11
+      #     ports: ['5432:5432']
+      #     options: >-
+      #       --health-cmd pg_isready
+      #       --health-interval 10s
+      #       --health-timeout 5s
+      #       --health-retries 5
+      - name: Spin up dependency containers
+        run: |
+          docker-compose up -d
+
+      - name: Setup database
+        env:
+          RAILS_ENV: test
+        run: |
+          ./bin/rails db:setup
+
+      - name: Test
+        run: ./bin/bundle exec rspec

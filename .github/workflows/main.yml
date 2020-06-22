@@ -19,7 +19,7 @@ jobs:
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.6.5
 
       # The docker-compose could be replaced by Action's services.
       #

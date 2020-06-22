@@ -21,9 +21,6 @@ jobs:
         with:
           ruby-version: 2.6
 
-      - name: Install application dependencies
-        run: ./bin/bundle install
-
       # The docker-compose could be replaced by Action's services.
       #
       # services:
@@ -39,11 +36,13 @@ jobs:
         run: |
           docker-compose up -d
 
-      - name: Setup database
+      - name: Install dependencies and setup database
         env:
           RAILS_ENV: test
         run: |
-          ./bin/rails db:setup
+          gem install bundler
+          bin/bundle install
+          bin/rails db:setup
 
       - name: Test
-        run: ./bin/bundle exec rspec
+        run: bin/bundle exec rspec

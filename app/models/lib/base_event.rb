@@ -122,6 +122,6 @@ class Lib::BaseEvent < ActiveRecord::Base
   end
 
   private def dispatch
-    Events::Dispatcher.dispatch(self)
+    ::Events::Dispatcher.dispatch(self)
   end
 end

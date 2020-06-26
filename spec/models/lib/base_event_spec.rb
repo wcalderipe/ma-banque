@@ -1,27 +1,30 @@
 require "rails_helper"
 
 describe Lib::BaseEvent do
-  class TestAggregate < ApplicationRecord
-    self.table_name = "temporary_test_aggregate"
-  end
+  TEST_AGGREGATE_TABLE_NAME = :temporary_test_aggregate
+  TEST_EVENT_TABLE_NAME = :temporary_test_event
 
-  # Event classes must look like this
-  class TestEvent < Lib::BaseEvent
-    self.table_name = "temporary_test_event"
+  module BaseEventTest
+    class Aggregate < ApplicationRecord
+      self.table_name = TEST_AGGREGATE_TABLE_NAME.to_s
+    end
 
-    data_attributes :foo, :bar
+    # Event classes must look like this
+    class Event < Lib::BaseEvent
+      self.table_name = TEST_EVENT_TABLE_NAME.to_s
 
-    # Defines the aggregate model association.
-    belongs_to(
-      :test_aggregate,
-      class_name: "::TestAggregate",
-      autosave: false
-    )
+      data_attributes :foo, :bar
 
-    # Applies changes to the aggregate and return it.
-    def apply(aggregate)
-      aggregate.description = "I was modified via #apply"
-      aggregate
+      belongs_to(
+        :test_aggregate,
+        class_name: "::BaseEventTest::Aggregate",
+        autosave: false
+      )
+
+      def apply(aggregate)
+        aggregate.description = "I was modified via #apply"
+        aggregate
+      end
     end
   end
 
@@ -31,7 +34,7 @@ describe Lib::BaseEvent do
     m = ActiveRecord::Migration.new
     m.verbose = false
 
-    m.create_table TestEvent.table_name.to_sym do |t|
+    m.create_table TEST_EVENT_TABLE_NAME do |t|
       # Every event table must have these two columns.
       t.text :data, null: false
       t.text :metadata, null: false
@@ -46,7 +49,7 @@ describe Lib::BaseEvent do
 
     # Creates the aggregate table to prevent "undefined table" error
     # when ActiveRecord tries to relate both models.
-    m.create_table TestAggregate.table_name.to_sym do |t|
+    m.create_table TEST_AGGREGATE_TABLE_NAME do |t|
       # Used during the #apply tests
       t.string :description, null: true
     end
@@ -56,24 +59,24 @@ describe Lib::BaseEvent do
     m = ActiveRecord::Migration.new
     m.verbose = false
 
-    m.drop_table TestEvent.table_name.to_sym
-    m.drop_table TestAggregate.table_name.to_sym
+    m.drop_table TEST_EVENT_TABLE_NAME
+    m.drop_table TEST_AGGREGATE_TABLE_NAME
   end
 
   context "before_validation" do
-    subject { TestEvent.new }
+    subject { BaseEventTest::Event.new }
 
     it "builds the aggregate" do
       expect(subject.aggregate).to be_nil
 
       subject.valid?
 
-      expect(subject.aggregate).to be_a(TestAggregate)
+      expect(subject.aggregate).to be_a(BaseEventTest::Aggregate)
     end
   end
 
   context "after_initialize" do
-    subject { TestEvent.new }
+    subject { BaseEventTest::Event.new }
 
     it "sets data attribute with an empty hash" do
       expect(subject.data).to eq({})
@@ -85,13 +88,13 @@ describe Lib::BaseEvent do
   end
 
   context "before_create" do
-    let!(:aggregate) { TestAggregate.create! }
+    let!(:aggregate) { BaseEventTest::Aggregate.create! }
 
     # NOTE: This test is almost the same of #apply method. We might
     #       want to get rid of the #apply one and just keep this one.
     it "applies and persists the changes to the aggregate" do
       expect {
-        TestEvent.create!(test_aggregate: aggregate)
+        BaseEventTest::Event.create!(test_aggregate: aggregate)
       }.to change { aggregate.reload.description }.from(nil).to("I was modified via #apply")
     end
 
@@ -99,8 +102,8 @@ describe Lib::BaseEvent do
     #       tool under the hood.
     it "creates a new event" do
       expect {
-        TestEvent.create!(test_aggregate: aggregate)
-      }.to change { TestEvent.count }.by(1)
+        BaseEventTest::Event.create!(test_aggregate: aggregate)
+      }.to change { BaseEventTest::Event.count }.by(1)
     end
 
     it "locks the aggregate before save" do
@@ -110,7 +113,7 @@ describe Lib::BaseEvent do
       allow(aggregate).to receive(:lock!).and_call_original
       allow(aggregate).to receive(:save!).and_call_original
 
-      TestEvent.create!(test_aggregate: aggregate)
+      BaseEventTest::Event.create!(test_aggregate: aggregate)
 
       expect(aggregate).to have_received(:lock!).once.ordered
       expect(aggregate).to have_received(:save!).once.ordered
@@ -118,19 +121,19 @@ describe Lib::BaseEvent do
   end
 
   context "after_create" do
-    let!(:aggregate) { TestAggregate.create! }
+    let!(:aggregate) { BaseEventTest::Aggregate.create! }
 
     it "dispatches the event" do
       allow(Events::Dispatcher).to receive(:dispatch).and_return(true)
 
-      event = TestEvent.create!(test_aggregate: aggregate)
+      event = BaseEventTest::Event.create!(test_aggregate: aggregate)
 
       expect(Events::Dispatcher).to have_received(:dispatch).with(event).once
     end
   end
 
   context "serialization" do
-    subject { TestEvent.new }
+    subject { BaseEventTest::Event.new }
 
     # TODO: Serialization can be done with many types, so we must
     #       ensure that here it's with JSON. However, using the
@@ -140,7 +143,7 @@ describe Lib::BaseEvent do
   end
 
   describe ".data_attributes" do
-    subject { TestEvent.new(data: { foo: "foo", bar: "bar" }) }
+    subject { BaseEventTest::Event.new(data: { foo: "foo", bar: "bar" }) }
 
     it "generates getters" do
       is_expected.to have_attributes(foo: "foo", bar: "bar")
@@ -157,28 +160,28 @@ describe Lib::BaseEvent do
 
   describe ".aggregate_name" do
     it "returns the first belongs_to association name" do
-      expect(TestEvent.aggregate_name).to eq(:test_aggregate)
+      expect(BaseEventTest::Event.aggregate_name).to eq(:test_aggregate)
     end
 
     context "when aggregate belongs_to association is not defined" do
-      class TestEventWithoutAggregate < Lib::BaseEvent
+      class BaseEventTest::EventWithoutAggregate < Lib::BaseEvent
         # Ruses the same table, we just want to bypass ActiveRecord
         # schema reflections.
-        self.table_name = TestEvent.table_name
+        self.table_name = TEST_EVENT_TABLE_NAME
       end
 
       it "raises an exception" do
         expect {
-          TestEventWithoutAggregate.aggregate_name
+          BaseEventTest::EventWithoutAggregate.aggregate_name
         }.to raise_error("Events must belong to an aggregate")
       end
     end
   end
 
   describe "#apply" do
-    let!(:aggregate) { TestAggregate.new }
+    let!(:aggregate) { BaseEventTest::Aggregate.new }
 
-    subject { TestEvent.new }
+    subject { BaseEventTest::Event.new }
 
     it "applies changes and return the aggregate" do
       expect {
@@ -189,17 +192,17 @@ describe Lib::BaseEvent do
     it "does not persist data" do
       expect {
         subject.apply(aggregate)
-      }.to_not change { TestAggregate.count }
+      }.to_not change { BaseEventTest::Aggregate.count }
     end
 
     context "when not implemented" do
-      class TestEventWithApplyNotImplemented < Lib::BaseEvent
+      class BaseEventTest::EventWithApplyNotImplemented < Lib::BaseEvent
         # Ruses the same table, we just want to bypass ActiveRecord
         # schema reflections.
-        self.table_name = TestEvent.table_name
+        self.table_name = TEST_EVENT_TABLE_NAME.to_s
       end
 
-      subject { TestEventWithApplyNotImplemented.new }
+      subject { BaseEventTest::EventWithApplyNotImplemented.new }
 
       it "raises an NotImplementedError" do
         expect {
@@ -210,10 +213,10 @@ describe Lib::BaseEvent do
   end
 
   describe "#aggregate=" do
-    subject { TestEvent.new }
+    subject { BaseEventTest::Event.new }
 
     it "sets the aggregate" do
-      expected_aggregate = TestAggregate.new
+      expected_aggregate = BaseEventTest::Aggregate.new
 
       expect {
         subject.aggregate = expected_aggregate
@@ -222,7 +225,7 @@ describe Lib::BaseEvent do
   end
 
   describe "#aggregate_id=" do
-    subject { TestEvent.new }
+    subject { BaseEventTest::Event.new }
 
     it "sets the aggregate_id" do
       expect {

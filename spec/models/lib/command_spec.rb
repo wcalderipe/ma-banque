@@ -7,23 +7,25 @@ describe Lib::Command do
     end
   end
 
-  class TestCommand
-    include Lib::Command
+  module TestCommand
+    class Command
+      include Lib::Command
 
-    # In order to avoid create a test event which would require a fake
-    # migration alongside of it we need a double. However, RSpec have
-    # some limitations on where you can create a double, so in order
-    # to workaround them we inject it as a command attribute.
-    #
-    # Just keep in mind, `event_double` is not part of the command
-    # itself nor is necessary in a normal scenario - it's just a test
-    # thing.
-    attributes :foo, :event_double
+      # In order to avoid create a test event which would require a fake
+      # migration alongside of it we need a double. However, RSpec have
+      # some limitations on where you can create a double, so in order
+      # to workaround them we inject it as a command attribute.
+      #
+      # Just keep in mind, `event_double` is not part of the command
+      # itself nor is necessary in a normal scenario - it's just a test
+      # thing.
+      attributes :foo, :event_double
 
-    validates_presence_of :foo
+      validates_presence_of :foo
 
-    def build_event
-      event_double
+      def build_event
+        event_double
+      end
     end
   end
 
@@ -36,7 +38,7 @@ describe Lib::Command do
   end
 
   subject do
-    TestCommand.new(
+    TestCommand::Command.new(
       event_double: build_event_double(),
       foo: "foo"
     )
@@ -58,7 +60,7 @@ describe Lib::Command do
     context "when event is persisted" do
       it "raises an error" do
         expect {
-          TestCommand.new(
+          TestCommand::Command.new(
             event_double: double(Lib::BaseEvent, :persisted? => true),
             foo: "foo"
           ).call()
@@ -67,7 +69,7 @@ describe Lib::Command do
     end
 
     context "when event is nil" do
-      class TestCommandWithoutEvent
+      class TestCommand::CommandWithoutEvent
         include Lib::Command
 
         def build_event
@@ -76,14 +78,14 @@ describe Lib::Command do
       end
 
       it "returns nil" do
-        expect(TestCommandWithoutEvent.new().call).to eq(nil)
+        expect(TestCommand::CommandWithoutEvent.new().call).to eq(nil)
       end
     end
 
     context "when event is invalid" do
       # Sets `foo` attribute to empty so presence validation fails.
       subject do
-        TestCommand.new(
+        TestCommand::Command.new(
           event_double: build_event_double(),
           foo: ""
         )

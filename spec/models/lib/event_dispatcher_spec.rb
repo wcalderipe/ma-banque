@@ -1,32 +1,34 @@
 require "rails_helper"
 
 describe Lib::EventDispatcher do
-  # There's no need to extend Lib::BaseEvent here because the
-  # dispatcher internal condition is using `is_a?` method.
-  class TestEvent
-    attr_accessor :double
+  module TestEventDispatcher
+    # There's no need to extend Lib::BaseEvent here because the
+    # dispatcher internal condition is using `is_a?` method.
+    class Event
+      attr_accessor :double
 
-    def initialize(double)
-      @double = double
+      def initialize(double)
+        @double = double
+      end
     end
-  end
 
-  class TestReactor
-    def self.call(event)
-      event.double.foo()
+    class Reactor
+      def self.call(event)
+        event.double.foo()
+      end
+    end
+
+    class Dispatcher < Lib::EventDispatcher
+      on TestEventDispatcher::Event, trigger: TestEventDispatcher::Reactor
     end
   end
 
   describe ".dispatch" do
-    class TestEventDispatcher < Lib::EventDispatcher
-      on TestEvent, trigger: TestReactor
-    end
-
     it "calls the reactor once" do
       pending("For some reason it's failing ¯\\_(ツ)_/¯")
 
       double = double('recorder', foo: true)
-      TestEventDispatcher.dispatch(TestEvent.new(double))
+      TestEventDispatcher::Dispatcher.dispatch(TestEventDispatcher::Event.new(double))
 
       expect(double).to receive(:foo).once
     end

@@ -15,6 +15,7 @@ Executing the rake task below in the root directory will render all
 `./docs/*.puml` files into `.png`.
 
 ```
+bundle exec rake docs:diagram:build_container
 bundle exec rake docs:diagram:render
 ```
 

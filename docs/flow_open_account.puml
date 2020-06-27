@@ -1,26 +1,8 @@
 @startuml
 
+!include styles.puml
+
 title Open Account Flow 
-
-!define GREY #434343
-!define LIGHT_GREY #efefef
-!define LIGHT_BLUE #cfe2f3
-!define LIGHT_GREEN #d9ead3
-!define LIGHT_PURPLE #d9d2e9
-
-skinparam note {
-    BackgroundColor LIGHT_GREY
-    BorderColor GREY
-}
-
-skinparam usecase {
-    BorderColor GREY
-    ArrowColor GREY
-
-    BackgroundColor<< Command >> LIGHT_BLUE
-    BackgroundColor<< Event >> LIGHT_GREEN
-    BackgroundColor<< Reactor >> LIGHT_PURPLE
-}
 
 (Create) << Command >>
 (Created) << Event >>

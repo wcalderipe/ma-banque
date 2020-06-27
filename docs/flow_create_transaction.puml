@@ -1,0 +1,41 @@
+@startuml
+
+!include styles.puml
+
+title Create Transaction Flow (Credit)
+
+(Create a transaction) << Action >>
+(CreateTransaction) << Command >>
+(TransactionCreated) << Event >>
+(TransactionValidator) << Reactor >>
+(UpdateTransactionStatus) << Command >>
+(TransactionStatusUpdated) << Event >>
+(AccountBalanceUpdater) << Reactor >>
+(CreditAccountBalance) << Command >>
+(AccountBalanceUpdated) << Event >>
+
+(Create a transaction) -> (CreateTransaction)
+note top of (Create a transaction)
+    Credit $100
+end note
+
+(CreateTransaction) --> (TransactionCreated)
+note bottom of (TransactionCreated)
+    Default status is PENDING 
+end note
+(TransactionCreated) <-- (TransactionValidator) : Listens to
+(TransactionValidator) -> (UpdateTransactionStatus) 
+(TransactionStatusUpdated) <-- (UpdateTransactionStatus)
+note right of (UpdateTransactionStatus)
+    Sets status to APPROVED
+end note
+
+(AccountBalanceUpdater) --> (TransactionStatusUpdated) : Listens to
+(AccountBalanceUpdater) -> (CreditAccountBalance)
+note right of (CreditAccountBalance)
+    Credit $100 in the
+    account current balance
+end note
+(CreditAccountBalance) --> (AccountBalanceUpdated) 
+
+@enduml

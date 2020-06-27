@@ -4,7 +4,7 @@ class Reactors::Account::CreateValidator
     #       move on.
     Commands::Account::UpdateStatus.call(
       account: event.account,
-      status: Account::OPENE,
+      status: Account::OPENED,
       metadata: { source: self.to_s }
     )
   end

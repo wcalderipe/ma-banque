@@ -27,5 +27,51 @@ namespace :docs do
         sh("cat #{filename} | docker run --rm -i ma-banque-plantuml -tpng > #{output_filename}")
       }
     end
+
+    # TODO: Maybe move it to a lib
+    desc "Build DIAGRAMS.md file"
+    task build_markdown: :environment do
+      diagrams = Dir.glob("./docs/*.puml")
+        .map { |filename|
+          basename = File.basename(filename, ".puml")
+
+          next if basename.eql?("styles")
+
+          title = basename.split("_").map(&:capitalize).join(" ")
+          anchor = "##{basename.gsub('_', '-')}"
+          rendered_filepath = "./rendered-#{basename}.png"
+
+          {
+            title: title,
+            anchor: anchor,
+            rendered_filepath: rendered_filepath
+          }
+        }
+        .compact
+
+      table_of_contents_links = diagrams.map { |diagram|
+        "- [#{diagram[:title]}](#{diagram[:anchor]})"
+      }.join("\n")
+
+      sections = diagrams.map { |diagram|
+<<-SECTION
+## #{diagram[:title]}
+
+![#{diagram[:title]}](#{diagram[:rendered_filepath]})
+SECTION
+    }.join("\n")
+
+      template = <<-TEMPLATE
+# Diagrams
+
+## Table of Contents
+
+#{table_of_contents_links}
+
+#{sections}
+TEMPLATE
+
+      File.write("./docs/DIAGRAMS.md", template)
+    end
   end
 end

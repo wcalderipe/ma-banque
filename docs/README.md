@@ -1,6 +1,8 @@
-# Diagrams
+# Documentation
 
 Diagrams are written in [PlantUML](https://plantuml.com/).
+
+See [DIAGRAMS.md](./DIAGRAMS.md).
 
 ## Installing
 
@@ -17,6 +19,12 @@ Executing the rake task below in the root directory will render all
 ```
 bundle exec rake docs:diagram:build_container
 bundle exec rake docs:diagram:render
+```
+
+## Build DIAGRAMS.md
+
+```
+bundle exec rake docs:diagram:build_markdown
 ```
 
 ## Resources

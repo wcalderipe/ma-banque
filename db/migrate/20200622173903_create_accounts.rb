@@ -1,7 +1,7 @@
 class CreateAccounts < ActiveRecord::Migration[6.0]
   def change
     create_table :accounts do |t|
-      t.string :status, default: Account.statuses.fetch(:pending)
+      t.string :status, default: Account::PENDING
       t.decimal :balance
 
       t.timestamps

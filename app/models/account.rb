@@ -1,6 +1,6 @@
 class Account < ApplicationRecord
   enum status: {
-         pending: "pending",
-         opened: "opened"
+         pending: PENDING = "pending",
+         opened: OPENED = "opened"
        }
 end

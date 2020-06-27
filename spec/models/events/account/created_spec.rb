@@ -7,7 +7,7 @@ describe Events::Account::Created do
 
       subject.apply(account)
 
-      expect(account.status).to eq(Account.statuses.fetch(:pending))
+      expect(account.status).to eq(Account::PENDING)
     end
   end
 end

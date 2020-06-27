@@ -16,5 +16,12 @@ describe Transaction, type: :model do
                        applied: "applied"
                      ).backed_by_column_of_type(:string)
     }
+
+    it {
+      is_expected.to define_enum_for(:type).with_values(
+                       credit: "credit",
+                       debit: "debit"
+                     ).backed_by_column_of_type(:string)
+    }
   end
 end

@@ -8,4 +8,9 @@ class Transaction < ApplicationRecord
          approved: APPROVED = "approved",
          applied: APPLIED = "applied"
        }
+
+  enum type: {
+         credit: CREDIT = "credit",
+         debit: DEBIT = "debit"
+       }
 end

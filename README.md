@@ -20,6 +20,14 @@ rails db:setup
 rails server
 ```
 
+## Documentation
+
+So far the only documentation are diagrams to simply express commands,
+events and reactors required for an action flow.
+
+For all diagrams, see [./docs](./docs) directory.
+
+
 ## Further Reading
 
 - [Event Sourcing Made Simple by Philippe Creux](https://kickstarter.engineering/event-sourcing-made-simple-4a2625113224)

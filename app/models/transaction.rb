@@ -5,8 +5,7 @@ class Transaction < ApplicationRecord
 
   enum status: {
          pending: PENDING = "pending",
-         approved: APPROVED = "approved",
-         applied: APPLIED = "applied"
+         approved: APPROVED = "approved"
        }
 
   enum kind: {

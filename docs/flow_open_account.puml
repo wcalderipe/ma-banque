@@ -6,24 +6,22 @@ title Open Account Flow
 
 (Create) << Command >>
 (Created) << Event >>
-(Creation Validator) << Reactor >>
-(Status Update) << Command >>
-(Status Updated) << Event >>
+(ValidatePending) << Reactor >>
+(StatusUpdate) << Command >>
+(StatusUpdated) << Event >>
 
 (Opens an account) --> (Create)
 (Create) --> (Created)
 note bottom of (Created)
-    Account status is
-    PENDING by default
+    Sets status to PENDING
 end note
 
-(Creation Validator) --> (Created)
+(ValidatePending) --> (Created)
 
-(Creation Validator) ---> (Status Update)
-(Status Update) ---> (Status Updated)
-note right of (Status Updated)
-    Account status
-    is now OPENED
+(ValidatePending) --> (StatusUpdate)
+(StatusUpdate) --> (StatusUpdated)
+note right of (StatusUpdated)
+    Sets status to OPENED
 end note
 
 @enduml

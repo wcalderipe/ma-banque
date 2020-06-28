@@ -12,8 +12,7 @@ describe Transaction, type: :model do
     it {
       is_expected.to define_enum_for(:status).with_values(
                        pending: "pending",
-                       approved: "approved",
-                       applied: "applied"
+                       approved: "approved"
                      ).backed_by_column_of_type(:string)
     }
 

@@ -1,7 +1,7 @@
-class Reactors::Account::CreateValidator
+class Reactors::Account::ValidatePending
   def self.call(event)
     # NOTE: Doesn't nothing now, just set the status to opened and
-    #       move on.
+    # move on.
     Commands::Account::UpdateStatus.call(
       account: event.account,
       status: Account::OPENED,

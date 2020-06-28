@@ -233,4 +233,34 @@ describe Lib::BaseEvent do
       }.to change { subject.aggregate_id }.from(nil).to(99)
     end
   end
+
+  describe "#aggregate_foreign_key" do
+    subject { BaseEventTest::Event.new }
+
+    it "composes from the belongs_to association name" do
+      expect(subject.aggregate_foreign_key).to eq("test_aggregate_id")
+    end
+
+    context "when belongs_to foreign_key option is set" do
+      class BaseEventTest::EventWithAggregateForeignKeySet < Lib::BaseEvent
+        # Ruses the same table, we just want to bypass ActiveRecord
+        # schema reflections.
+        self.table_name = TEST_EVENT_TABLE_NAME.to_s
+
+
+        belongs_to(
+          :test_aggregate,
+          foreign_key: "foo_id",
+          class_name: "::BaseEventTest::Aggregate",
+          autosave: false
+        )
+      end
+
+      subject { BaseEventTest::EventWithAggregateForeignKeySet.new }
+
+      it "returns the foreign_key" do
+        expect(subject.aggregate_foreign_key).to eq("foo_id")
+      end
+    end
+  end
 end

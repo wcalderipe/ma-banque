@@ -73,11 +73,11 @@ class Lib::BaseEvent < ActiveRecord::Base
   end
 
   def aggregate_id=(id)
-    public_send "#{aggregate_name}_id=", id
+    public_send "#{aggregate_foreign_key}=", id
   end
 
   def aggregate_id
-    public_send "#{aggregate_name}_id"
+    public_send aggregate_foreign_key
   end
 
   def build_aggregate
@@ -107,12 +107,27 @@ class Lib::BaseEvent < ActiveRecord::Base
   end
 
   def self.aggregate_name
-    inferred_aggregate = reflect_on_all_associations(:belongs_to).first
-    raise "Events must belong to an aggregate" if inferred_aggregate.nil?
     inferred_aggregate.name
   end
 
+  def self.aggregate_foreign_key
+    aggregate_association = inferred_aggregate
+
+    if aggregate_association&.options[:foreign_key].present?
+      aggregate_association&.options[:foreign_key]
+    else
+      "#{aggregate_association.name}_id"
+    end
+  end
+
+  def self.inferred_aggregate
+    inferred_aggregate = reflect_on_all_associations(:belongs_to).first
+    raise "Events must belong to an aggregate" if inferred_aggregate.nil?
+    inferred_aggregate
+  end
+
   delegate :aggregate_name, to: :class
+  delegate :aggregate_foreign_key, to: :class
 
   # Underscored class name by default. ex: "post/updated"
   #

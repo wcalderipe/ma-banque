@@ -1,6 +1,6 @@
 class Transaction < ApplicationRecord
   attribute :status, :string
-  attribute :type, :string
+  attribute :kind, :string
   attribute :balance, :decimal
 
   enum status: {
@@ -9,7 +9,7 @@ class Transaction < ApplicationRecord
          applied: APPLIED = "applied"
        }
 
-  enum type: {
+  enum kind: {
          credit: CREDIT = "credit",
          debit: DEBIT = "debit"
        }

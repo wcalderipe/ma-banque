@@ -247,7 +247,6 @@ describe Lib::BaseEvent do
         # schema reflections.
         self.table_name = TEST_EVENT_TABLE_NAME.to_s
 
-
         belongs_to(
           :test_aggregate,
           foreign_key: "foo_id",

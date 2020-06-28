@@ -4,7 +4,7 @@ describe Transaction, type: :model do
   describe "attributes" do
     it { is_expected.to respond_to(:id) }
     it { is_expected.to respond_to(:status) }
-    it { is_expected.to respond_to(:type) }
+    it { is_expected.to respond_to(:kind) }
     it { is_expected.to respond_to(:balance) }
   end
 
@@ -18,7 +18,7 @@ describe Transaction, type: :model do
     }
 
     it {
-      is_expected.to define_enum_for(:type).with_values(
+      is_expected.to define_enum_for(:kind).with_values(
                        credit: "credit",
                        debit: "debit"
                      ).backed_by_column_of_type(:string)

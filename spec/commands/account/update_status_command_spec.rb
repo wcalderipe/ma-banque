@@ -1,10 +1,10 @@
 require "rails_helper"
 
-describe Commands::Account::UpdateStatus do
+describe Account::UpdateStatusCommand do
   let(:account) { Account.create!(status: Account::PENDING) }
 
   subject do
-    Commands::Account::UpdateStatus.call(
+    described_class.call(
       account: account,
       status: Account::OPENED,
       metadata: { source: "test" }
@@ -19,7 +19,7 @@ describe Commands::Account::UpdateStatus do
 
   context "when status is the same" do
     subject do
-      Commands::Account::UpdateStatus.call(
+      described_class.call(
         account: account,
         status: Account::PENDING,
         metadata: { source: "test" }

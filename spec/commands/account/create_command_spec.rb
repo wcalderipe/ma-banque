@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Commands::Account::Create do
+describe Account::CreateCommand do
   subject { described_class.call(metadata: { source: "test" }) }
 
   it "creates an event with metadata" do

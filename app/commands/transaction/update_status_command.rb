@@ -1,4 +1,4 @@
-class Commands::Transaction::UpdateStatus
+class Transaction::UpdateStatusCommand
   include Lib::Command
 
   attributes :tx, :status, :metadata

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Commands::Transaction::Create do
+describe Transaction::CreateCommand do
   subject do
     described_class.call(
       kind: Transaction::CREDIT,

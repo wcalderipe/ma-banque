@@ -1,4 +1,4 @@
-class Commands::Account::Create
+class Account::CreateCommand
   include Lib::Command
 
   attributes :metadata

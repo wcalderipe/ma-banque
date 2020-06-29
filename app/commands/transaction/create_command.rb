@@ -1,4 +1,4 @@
-class Commands::Transaction::Create
+class Transaction::CreateCommand
   include Lib::Command
 
   attributes :kind, :balance, :metadata

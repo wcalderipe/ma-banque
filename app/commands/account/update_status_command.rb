@@ -1,4 +1,4 @@
-class Commands::Account::UpdateStatus
+class Account::UpdateStatusCommand
   include Lib::Command
 
   attributes :account, :status, :metadata

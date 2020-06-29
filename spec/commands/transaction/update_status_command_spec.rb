@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Commands::Transaction::UpdateStatus do
+describe Transaction::UpdateStatusCommand do
   let(:tx) { Transaction.create!(status: Transaction::PENDING) }
 
   subject do

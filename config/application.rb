@@ -26,6 +26,7 @@ module MaBanque
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    config.autoload_paths << "#{config.root}/app/commands"
     config.autoload_paths << "#{config.root}/app/reactors"
   end
 end

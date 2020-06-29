@@ -32,7 +32,7 @@
 #     end
 #   end
 # ```
-module Lib
+module EventSource
   module Command
     extend ActiveSupport::Concern
 

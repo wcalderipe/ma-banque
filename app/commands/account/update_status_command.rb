@@ -1,5 +1,5 @@
 class Account::UpdateStatusCommand
-  include Lib::Command
+  include EventSource::Command
 
   attributes :account, :status, :metadata
 

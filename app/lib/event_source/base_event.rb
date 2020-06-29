@@ -7,7 +7,7 @@
 # After create, it calls `apply` to apply changes.
 #
 # Subclasses must define the `apply` method.
-class Lib::BaseEvent < ActiveRecord::Base
+class EventSource::BaseEvent < ActiveRecord::Base
   serialize :data, JSON
   serialize :metadata, JSON
 

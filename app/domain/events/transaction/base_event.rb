@@ -1,4 +1,4 @@
-class Events::Transaction::BaseEvent < Lib::BaseEvent
+class Events::Transaction::BaseEvent < EventSource::BaseEvent
   self.table_name = "transaction_events"
 
   # Uses a transaction abbreviation because it was conflicting with a

@@ -1,5 +1,5 @@
 class Account::CreateCommand
-  include Lib::Command
+  include EventSource::Command
 
   attributes :metadata
 

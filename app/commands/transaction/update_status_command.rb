@@ -1,5 +1,5 @@
 class Transaction::UpdateStatusCommand
-  include Lib::Command
+  include EventSource::Command
 
   attributes :tx, :status, :metadata
 

@@ -1,5 +1,5 @@
 class Transaction::CreateCommand
-  include Lib::Command
+  include EventSource::Command
 
   attributes :kind, :balance, :metadata
 

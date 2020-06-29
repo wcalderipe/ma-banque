@@ -1,15 +1,15 @@
 require "rails_helper"
 
-describe Lib::Command do
+describe EventSource::Command do
   context "mixin" do
     it "extends ActiveSupport::Concern" do
-      expect(Lib::Command).to be_a_kind_of(ActiveSupport::Concern)
+      expect(EventSource::Command).to be_a_kind_of(ActiveSupport::Concern)
     end
   end
 
   module TestCommand
     class Command
-      include Lib::Command
+      include EventSource::Command
 
       # In order to avoid create a test event which would require a fake
       # migration alongside of it we need a double. However, RSpec have
@@ -31,7 +31,7 @@ describe Lib::Command do
 
   def build_event_double
     double(
-      Lib::BaseEvent,
+      EventSource::BaseEvent,
       :persisted? => false,
       :save! => true
     )
@@ -61,7 +61,7 @@ describe Lib::Command do
       it "raises an error" do
         expect {
           TestCommand::Command.new(
-            event_double: double(Lib::BaseEvent, :persisted? => true),
+            event_double: double(EventSource::BaseEvent, :persisted? => true),
             foo: "foo"
           ).call()
         }.to raise_error("The event should not be persisted at this stage!")
@@ -70,7 +70,7 @@ describe Lib::Command do
 
     context "when event is nil" do
       class TestCommand::CommandWithoutEvent
-        include Lib::Command
+        include EventSource::Command
 
         def build_event
           nil

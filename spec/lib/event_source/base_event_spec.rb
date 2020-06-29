@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Lib::BaseEvent do
+describe EventSource::BaseEvent, type: :model do
   TEST_AGGREGATE_TABLE_NAME = :temporary_test_aggregate
   TEST_EVENT_TABLE_NAME = :temporary_test_event
 
@@ -10,7 +10,7 @@ describe Lib::BaseEvent do
     end
 
     # Event classes must look like this
-    class Event < Lib::BaseEvent
+    class Event < EventSource::BaseEvent
       self.table_name = TEST_EVENT_TABLE_NAME.to_s
 
       data_attributes :foo, :bar
@@ -164,7 +164,7 @@ describe Lib::BaseEvent do
     end
 
     context "when aggregate belongs_to association is not defined" do
-      class BaseEventTest::EventWithoutAggregate < Lib::BaseEvent
+      class BaseEventTest::EventWithoutAggregate < EventSource::BaseEvent
         # Ruses the same table, we just want to bypass ActiveRecord
         # schema reflections.
         self.table_name = TEST_EVENT_TABLE_NAME
@@ -196,7 +196,7 @@ describe Lib::BaseEvent do
     end
 
     context "when not implemented" do
-      class BaseEventTest::EventWithApplyNotImplemented < Lib::BaseEvent
+      class BaseEventTest::EventWithApplyNotImplemented < EventSource::BaseEvent
         # Ruses the same table, we just want to bypass ActiveRecord
         # schema reflections.
         self.table_name = TEST_EVENT_TABLE_NAME.to_s
@@ -242,7 +242,7 @@ describe Lib::BaseEvent do
     end
 
     context "when belongs_to foreign_key option is set" do
-      class BaseEventTest::EventWithAggregateForeignKeySet < Lib::BaseEvent
+      class BaseEventTest::EventWithAggregateForeignKeySet < EventSource::BaseEvent
         # Ruses the same table, we just want to bypass ActiveRecord
         # schema reflections.
         self.table_name = TEST_EVENT_TABLE_NAME.to_s

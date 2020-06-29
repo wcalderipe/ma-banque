@@ -1,5 +1,5 @@
 # Dispatcher implementation used by Events::Dispatcher.
-class Lib::EventDispatcher
+class EventSource::EventDispatcher
   # Register Reactors to Events.
   # * Reactors registered with `trigger` will be triggered
   #   synchronously

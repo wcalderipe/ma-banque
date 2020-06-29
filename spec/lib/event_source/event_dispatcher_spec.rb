@@ -1,8 +1,8 @@
 require "rails_helper"
 
-describe Lib::EventDispatcher do
+describe EventSource::EventDispatcher do
   module TestEventDispatcher
-    # There's no need to extend Lib::BaseEvent here because the
+    # There's no need to extend EventSource::BaseEvent here because the
     # dispatcher internal condition is using `is_a?` method.
     class Event
       attr_accessor :double
@@ -18,7 +18,7 @@ describe Lib::EventDispatcher do
       end
     end
 
-    class Dispatcher < Lib::EventDispatcher
+    class Dispatcher < EventSource::EventDispatcher
       on TestEventDispatcher::Event, trigger: TestEventDispatcher::Reactor
     end
   end

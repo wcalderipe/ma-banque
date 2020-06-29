@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Reactors::Transaction::ValidatePending do
+describe Transaction::ValidatePendingReactor do
   subject { described_class.call(metadata: { source: "test" }) }
 
   let(:tx) do
@@ -22,7 +22,7 @@ describe Reactors::Transaction::ValidatePending do
       Events::Transaction::Created.create!(tx: tx)
       event = Events::Transaction::StatusUpdated.last
 
-      expect(event.metadata["source"]).to eq("Reactors::Transaction::ValidatePending")
+      expect(event.metadata["source"]).to eq("Transaction::ValidatePendingReactor")
     end
   end
 end

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Reactors::Account::ValidatePending do
+describe Account::ValidatePendingReactor do
   let(:account) { Account.create!(status: Account::PENDING) }
 
   describe ".call" do
@@ -14,7 +14,7 @@ describe Reactors::Account::ValidatePending do
       Events::Account::Created.create!(account: account)
       event = Events::Account::StatusUpdated.last
 
-      expect(event.metadata["source"]).to eq("Reactors::Account::ValidatePending")
+      expect(event.metadata["source"]).to eq("Account::ValidatePendingReactor")
     end
   end
 end

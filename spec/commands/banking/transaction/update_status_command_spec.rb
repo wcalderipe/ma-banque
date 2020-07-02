@@ -1,0 +1,40 @@
+require "rails_helper"
+
+describe Banking::Transaction::UpdateStatusCommand do
+  let(:tx) {
+    create(
+      :transaction, :credit, :pending,
+      account: create(:account, :opened)
+    )
+  }
+
+  subject do
+    described_class.call(
+      tx: tx,
+      status: Banking::Transaction::APPROVED,
+      metadata: { source: "test" }
+    )
+  end
+
+  it "updates the aggregator status" do
+    expect {
+      subject
+    }.to change { tx.reload.status }.to(Banking::Transaction::APPROVED)
+  end
+
+  context "when status is the same" do
+    subject do
+      described_class.call(
+        tx: tx,
+        status: Banking::Transaction::PENDING,
+        metadata: { source: "test" }
+      )
+    end
+
+    it "does not create a new event" do
+      expect {
+        subject
+      }.to change { Events::Banking::Transaction::StatusUpdated.count }.by(0)
+    end
+  end
+end

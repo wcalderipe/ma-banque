@@ -1,7 +1,7 @@
 # Subscribes Reactors to Events.
 class Events::Dispatcher < EventSource::EventDispatcher
-  on Events::Account::Created, trigger: Account::ValidatePendingReactor
+  on Events::Banking::Account::Created, trigger: Banking::Account::ValidatePendingReactor
 
-  on Events::Transaction::Created, trigger: Transaction::ValidatePendingReactor
-  on Events::Transaction::StatusUpdated, trigger: Account::CalculateBalanceReactor
+  on Events::Banking::Transaction::Created, trigger: Banking::Transaction::ValidatePendingReactor
+  on Events::Banking::Transaction::StatusUpdated, trigger: Banking::Account::CalculateBalanceReactor
 end

@@ -3,6 +3,8 @@ class Transaction < ApplicationRecord
   attribute :kind, :string
   attribute :balance, :decimal
 
+  belongs_to :account
+
   enum status: {
          pending: PENDING = "pending",
          approved: APPROVED = "approved"

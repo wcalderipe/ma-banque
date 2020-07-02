@@ -1,7 +1,12 @@
 require "rails_helper"
 
 describe Transaction::UpdateStatusCommand do
-  let(:tx) { Transaction.create!(status: Transaction::PENDING) }
+  let(:tx) {
+    create(
+      :transaction, :credit, :pending,
+      account: create(:account, :opened)
+    )
+  }
 
   subject do
     described_class.call(

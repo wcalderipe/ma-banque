@@ -8,6 +8,10 @@ describe Transaction, type: :model do
     it { is_expected.to respond_to(:balance) }
   end
 
+  describe "associations" do
+    it { is_expected.to belong_to(:account) }
+  end
+
   describe "enums" do
     it {
       is_expected.to define_enum_for(:status).with_values(

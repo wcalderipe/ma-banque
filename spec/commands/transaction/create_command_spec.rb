@@ -1,8 +1,11 @@
 require "rails_helper"
 
 describe Transaction::CreateCommand do
+  let(:account) { create(:account, :opened) }
+
   subject do
     described_class.call(
+      account: account,
       kind: Transaction::CREDIT,
       balance: 99,
       metadata: { source: "test" }
@@ -12,6 +15,7 @@ describe Transaction::CreateCommand do
   it "creates an event with metadata" do
     expect {
       described_class.call(
+        account: account,
         kind: Transaction::CREDIT,
         balance: 99,
         metadata: { source: "test" }
@@ -26,6 +30,7 @@ describe Transaction::CreateCommand do
   it "creates a pending transaction" do
     expect {
       described_class.call(
+        account: account,
         kind: Transaction::CREDIT,
         balance: 99,
         metadata: { source: "test" }

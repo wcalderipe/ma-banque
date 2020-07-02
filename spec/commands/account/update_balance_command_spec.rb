@@ -1,11 +1,11 @@
 require "rails_helper"
 
 describe Account::UpdateBalanceCommand do
-  let(:account) { Account.create!(status: Account::OPENED, balance: 0) }
+  let(:account) { create(:account, :opened) }
   let(:tx) do
-    Transaction.create!(
-      status: Transaction::APPROVED,
-      kind: Transaction::CREDIT,
+    create(
+      :transaction, :approved, :credit,
+      account: account,
       balance: 100
     )
   end

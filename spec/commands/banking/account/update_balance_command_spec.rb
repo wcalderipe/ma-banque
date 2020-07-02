@@ -2,6 +2,7 @@ require "rails_helper"
 
 describe Banking::Account::UpdateBalanceCommand do
   let(:account) { create(:account, :opened) }
+
   let(:tx) do
     create(
       :transaction, :approved, :credit,
@@ -12,7 +13,6 @@ describe Banking::Account::UpdateBalanceCommand do
 
   subject do
     described_class.call(
-      account: account,
       tx: tx,
       metadata: { source: "test" }
     )

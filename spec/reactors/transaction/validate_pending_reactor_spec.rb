@@ -7,7 +7,8 @@ describe Transaction::ValidatePendingReactor do
     it "sets transaction status to approved" do
       Events::Transaction::Created.create!(
         account: account,
-        kind: Transaction::CREDIT
+        kind: Transaction::CREDIT,
+        balance: 0
       )
 
       expect(Transaction.last.status).to eq(Transaction::APPROVED)
@@ -17,7 +18,7 @@ describe Transaction::ValidatePendingReactor do
       Events::Transaction::Created.create!(
         account: account,
         kind: Transaction::CREDIT,
-        balance: 99
+        balance: 0
       )
       last_status_updated = Events::Transaction::StatusUpdated.last
 

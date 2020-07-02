@@ -3,6 +3,7 @@ class Transaction::CreateCommand
 
   attributes :account, :kind, :balance, :metadata
 
+  # TODO: Validate presence of balance
   private def build_event
     Events::Transaction::Created.new(
       account: account,

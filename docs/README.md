@@ -21,6 +21,10 @@ bundle exec rake docs:diagram:build_container
 bundle exec rake docs:diagram:render
 ```
 
+_**Note:** If `styles.puml` file changed, rebuilding the container is
+required before render the diagrams again, otherwise changes won't be
+applied._
+
 ## Build DIAGRAMS.md
 
 ```

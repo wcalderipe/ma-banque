@@ -2,40 +2,41 @@
 
 !include styles.puml
 
-title Create Transaction Flow (Credit)
+title CreateTransaction Transaction Flow (Credit)
 
-(Create a transaction) << Action >>
-(Create) << Command >>
-(Created) << Event >>
-(ValidatePending) << Reactor >>
-(UpdateStatus) << Command >>
-(StatusUpdated) << Event >>
+(CreateTransaction) << Command >>
+(TransactionCreated) << Event >>
+(ValidatePendingTransaction) << Reactor >>
+(UpdateTransactionStatus) << Command >>
+(TransactionStatusUpdated) << Event >>
 (CalculateAccountBalance) << Reactor >>
 (UpdateAccountBalance) << Command >>
 (AccountBalanceUpdated) << Event >>
 
-(Create a transaction) -> (Create)
-note top of (Create a transaction)
+(CreateTransaction) --> (TransactionCreated)
+note right of (CreateTransaction)
     Credit $100
 end note
-
-(Create) --> (Created)
-note bottom of (Created)
+note bottom of (TransactionCreated)
     Default status is PENDING 
 end note
-(Created) <-- (ValidatePending) : Listens to
-(ValidatePending) -> (UpdateStatus) 
-(StatusUpdated) <-- (UpdateStatus)
-note right of (UpdateStatus)
-    Sets status to APPROVED
-end note
 
-(CalculateAccountBalance) --> (StatusUpdated) : Listens to
-(CalculateAccountBalance) -> (UpdateAccountBalance)
-note right of (UpdateAccountBalance)
+(TransactionCreated) <- (ValidatePendingTransaction)
+
+(ValidatePendingTransaction) -> (UpdateTransactionStatus) : Sets status to APPROVED
+
+(TransactionStatusUpdated) <-- (UpdateTransactionStatus)
+
+(TransactionStatusUpdated) -> (CalculateAccountBalance)
+
+(CalculateAccountBalance) -> (UpdateAccountBalance) : 1st
+
+(UpdateAccountBalance) --> (AccountBalanceUpdated)
+note bottom of (AccountBalanceUpdated)
     Credit $100 in the
     account current balance
 end note
-(UpdateAccountBalance) --> (AccountBalanceUpdated) 
+
+(CalculateAccountBalance) -> (UpdateTransactionStatus) : 2nd sets status to APPLIED
 
 @enduml

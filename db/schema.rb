@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 2020_07_01_062715) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "status", default: "pending"
-    t.decimal "balance"
+    t.decimal "balance", default: "0.0"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -41,9 +41,9 @@ ActiveRecord::Schema.define(version: 2020_07_01_062715) do
   end
 
   create_table "transactions", force: :cascade do |t|
-    t.decimal "balance"
+    t.decimal "balance", default: "0.0"
     t.string "kind"
-    t.string "status"
+    t.string "status", default: "pending"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "account_id", null: false

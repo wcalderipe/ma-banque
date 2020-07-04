@@ -1,0 +1,36 @@
+@startuml
+
+!include styles.puml
+
+title Create Transaction Happy Path
+
+participant CreateTransaction << Command >>
+participant TransactionCreated << Event >>
+participant ValidatePendingTransaction << Reactor >>
+participant UpdateTransactionStatus << Command >>
+participant TransactionStatusUpdated << Event >>
+participant CalculateAccountBalance << Reactor >>
+participant UpdateAccountBalance << Command >>
+participant AccountBalanceUpdated << Event >>
+
+CreateTransaction -> TransactionCreated : Create $100\ntransaction
+note right of CreateTransaction
+    Default transaction status is pending.
+end note
+activate CreateTransaction
+    ValidatePendingTransaction -->> TransactionCreated : Listen to
+    ValidatePendingTransaction -> UpdateTransactionStatus
+    UpdateTransactionStatus -> TransactionStatusUpdated : Set transaction\nstatus to approved
+
+    CalculateAccountBalance -->> TransactionStatusUpdated : Listen to
+    note left of CalculateAccountBalance
+        Only accept approved transactions.
+    end note
+    CalculateAccountBalance -> UpdateAccountBalance
+    UpdateAccountBalance -> AccountBalanceUpdated : Credit $100 in the account
+
+    CalculateAccountBalance -> UpdateTransactionStatus 
+    UpdateTransactionStatus -> TransactionStatusUpdated : Set transaction\nsatus to applied
+deactivate CreateTransaction
+
+@enduml

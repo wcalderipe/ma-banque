@@ -1,5 +1,7 @@
 @startuml
 
+' See https://plantuml-documentation.readthedocs.io/en/latest/formatting/all-skin-params.html
+
 !define GREY #434343
 !define LIGHT_GREY #efefef
 !define LIGHT_BLUE #cfe2f3
@@ -12,12 +14,21 @@ skinparam note {
     BorderColor GREY
 }
 
+skinparam sequence {
+    LifeLineBorderColor GREY
+
+    ParticipantBorderColor GREY
+    ParticipantBackgroundColor LIGHT_YELLOW
+
+    ParticipantBackgroundColor<< Command >> LIGHT_BLUE
+    ParticipantBackgroundColor<< Event >> LIGHT_GREEN
+    ParticipantBackgroundColor<< Reactor >> LIGHT_PURPLE
+}
+
 skinparam usecase {
     BorderColor GREY
     ArrowColor GREY
 
-    ' CQRS flow diagram components
-    BackgroundColor<< Action >> LIGHT_YELLOW
     BackgroundColor<< Command >> LIGHT_BLUE
     BackgroundColor<< Event >> LIGHT_GREEN
     BackgroundColor<< Reactor >> LIGHT_PURPLE

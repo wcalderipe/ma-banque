@@ -1,28 +1,40 @@
 require "rails_helper"
 
-describe Banking::Transaction::ValidatePendingReactor do
-  let(:account) { create(:account, :opened) }
+describe Banking::Transaction::ValidatePendingReactor, focus: true do
+  include EventSource::TestHelper
+
+  before(:each) { prevent_event_dispatch }
+
+  subject do
+    tx = build(
+      :transaction, :credit, :pending,
+      account: build(:account, :opened)
+    )
+
+    described_class.call(
+      Events::Banking::Transaction::Created.new(tx: tx)
+    )
+  end
 
   describe ".call" do
-    it "sets transaction status to approved" do
-      Events::Banking::Transaction::Created.create!(
-        account: account,
-        kind: Banking::Transaction::CREDIT,
-        balance: 0
-      )
-
-      expect(Banking::Transaction.last.status).to eq(Banking::Transaction::APPROVED)
+    it "creates transaction status updated event" do
+      expect { subject }.to change {
+        Events::Banking::Transaction::StatusUpdated.count
+      }.by(1)
     end
 
-    it "sets the class name in the metadata source" do
-      Events::Banking::Transaction::Created.create!(
-        account: account,
-        kind: Banking::Transaction::CREDIT,
-        balance: 0
-      )
-      last_status_updated = Events::Banking::Transaction::StatusUpdated.last
+    it "sets event status to approved" do
+      subject
+      event = Events::Banking::Transaction::StatusUpdated.last
 
-      expect(last_status_updated.metadata["source"]).to eq(described_class.to_s)
+      expect(event.data["status"]).to eq(Banking::Transaction::APPROVED)
+    end
+
+    it "sets reactor name as the event source" do
+      subject
+      event = Events::Banking::Transaction::StatusUpdated.last
+
+      expect(event.metadata["source"]).to eq(described_class.to_s)
     end
   end
 end

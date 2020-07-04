@@ -7,7 +7,8 @@ class Banking::Transaction < ApplicationRecord
 
   enum status: {
          pending: PENDING = "pending",
-         approved: APPROVED = "approved"
+         approved: APPROVED = "approved",
+         applied: APPLIED = "applied",
        }
 
   enum kind: {

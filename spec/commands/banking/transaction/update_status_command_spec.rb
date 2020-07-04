@@ -1,12 +1,20 @@
 require "rails_helper"
 
 describe Banking::Transaction::UpdateStatusCommand do
-  let(:tx) {
+  include EventSource::TestHelper
+
+  before(:each) { prevent_event_dispatch }
+
+  let(:tx) do
     create(
       :transaction, :credit, :pending,
-      account: create(:account, :opened)
+      # TODO: This is fundamentally wrong. Why the transaction doesn't
+      # need the account to be created upfront?
+      # Any transaction must belong to an existing account with any
+      # status except pending.
+      account: build(:account, :opened)
     )
-  }
+  end
 
   subject do
     described_class.call(
@@ -16,10 +24,10 @@ describe Banking::Transaction::UpdateStatusCommand do
     )
   end
 
-  it "updates the aggregator status" do
-    expect {
-      subject
-    }.to change { tx.reload.status }.to(Banking::Transaction::APPROVED)
+  it "updates aggregator status" do
+    expect { subject }.to change {
+      tx.reload.status
+    }.to(Banking::Transaction::APPROVED)
   end
 
   context "when status is the same" do
@@ -31,10 +39,10 @@ describe Banking::Transaction::UpdateStatusCommand do
       )
     end
 
-    it "does not create a new event" do
-      expect {
-        subject
-      }.to change { Events::Banking::Transaction::StatusUpdated.count }.by(0)
+    it "does not create an event" do
+      expect { subject }.to change {
+        Events::Banking::Transaction::StatusUpdated.count
+      }.by(0)
     end
   end
 end

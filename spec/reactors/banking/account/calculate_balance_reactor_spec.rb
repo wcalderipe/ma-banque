@@ -1,34 +1,83 @@
 require "rails_helper"
 
 describe Banking::Account::CalculateBalanceReactor do
-  let(:account) { create(:account, :opened) }
+  include EventSource::TestHelper
+
+  before(:each) { prevent_event_dispatch }
 
   let(:tx) do
-    create(
-      :transaction, :credit, :pending,
-      account: account,
-      balance: 99
+    build(
+      :transaction, :credit, :approved,
+      account: build(:account, :opened)
+    )
+  end
+
+  subject do
+    described_class.call(
+      Events::Banking::Transaction::StatusUpdated.new(
+        tx: tx,
+        status: Banking::Transaction::APPROVED
+      )
     )
   end
 
   describe ".call" do
-    it "sets account status to opened" do
-      expect {
-        Events::Banking::Transaction::StatusUpdated.create!(
-          tx: tx,
-          status: Banking::Transaction::APPROVED
-        )
-      }.to change { account.reload.balance }.to(99)
+    describe "account balance" do
+      it "creates an event" do
+        expect { subject }.to change {
+          Events::Banking::Account::BalanceUpdated.count
+        }.by(1)
+      end
+
+      it "sets reactor name as the event source" do
+        subject
+        event = Events::Banking::Account::BalanceUpdated.last
+
+        expect(event.metadata["source"]).to eq(described_class.to_s)
+      end
     end
 
-    it "sets event source to the class name" do
-      Events::Banking::Transaction::StatusUpdated.create!(
-        tx: tx,
-        status: Banking::Transaction::APPROVED
-      )
-      last_event = Events::Banking::Account::BalanceUpdated.last
+    describe "transaction status" do
+      it "creates an event" do
+        expect { subject }.to change {
+          Events::Banking::Transaction::StatusUpdated.count
+        }.by(1)
+      end
 
-      expect(last_event.metadata["source"]).to eq(described_class.to_s)
+      it "sets event status to applied" do
+        subject
+        event = Events::Banking::Transaction::StatusUpdated.last
+
+        expect(event.data["status"]).to eq(Banking::Transaction::APPLIED)
+      end
+
+      it "sets reactor name as the event source" do
+        subject
+        event = Events::Banking::Transaction::StatusUpdated.last
+
+        expect(event.metadata["source"]).to eq(described_class.to_s)
+      end
+    end
+
+    context "when transaction is not approved" do
+      let(:tx) do
+        build(
+          :transaction, :credit, :pending,
+          account: build(:account, :opened)
+        )
+      end
+
+      it "does not create account balance updated event" do
+        expect { subject }.to change {
+          Events::Banking::Account::BalanceUpdated.count
+        }.by(0)
+      end
+
+      it "does not create transaction status updated event" do
+        expect { subject }.to change {
+          Events::Banking::Transaction::StatusUpdated.count
+        }.by(0)
+      end
     end
   end
 end

@@ -16,7 +16,8 @@ describe Banking::Transaction, type: :model do
     it {
       is_expected.to define_enum_for(:status).with_values(
                        pending: "pending",
-                       approved: "approved"
+                       approved: "approved",
+                       applied: "applied"
                      ).backed_by_column_of_type(:string)
     }
 

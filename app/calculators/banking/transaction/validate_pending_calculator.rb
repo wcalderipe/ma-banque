@@ -1,4 +1,4 @@
-class Banking::Transaction::ValidatePendingReactor
+class Banking::Transaction::ValidatePendingCalculator
   # NOTE: Doesn't nothing now, however when debit transactions are
   # introduced it might check the account balance here.
   def self.call(event)

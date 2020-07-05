@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Banking::Account::ValidatePendingReactor do
+describe Banking::Account::ValidatePendingCalculator do
   include EventSource::TestHelper
 
   before(:each) { prevent_event_dispatch }
@@ -27,7 +27,7 @@ describe Banking::Account::ValidatePendingReactor do
       expect(event.data["status"]).to eq(Banking::Account::OPENED)
     end
 
-    it "sets reactor name as the event source" do
+    it "sets calculator name as the event source" do
       subject
       event = Events::Banking::Account::StatusUpdated.last
 

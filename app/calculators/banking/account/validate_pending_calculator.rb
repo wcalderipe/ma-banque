@@ -1,4 +1,4 @@
-class Banking::Account::ValidatePendingReactor
+class Banking::Account::ValidatePendingCalculator
   def self.call(event)
     # NOTE: Doesn't nothing now, just set the status to opened and
     # move on.

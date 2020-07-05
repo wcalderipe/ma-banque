@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Banking::Account::ApplyTransactionReactor do
+describe Banking::Account::ApplyTransactionCalculator do
   include EventSource::TestHelper
 
   before(:each) { prevent_event_dispatch }
@@ -29,7 +29,7 @@ describe Banking::Account::ApplyTransactionReactor do
         }.by(1)
       end
 
-      it "sets reactor name as the event source" do
+      it "sets calculator name as the event source" do
         subject
         event = Events::Banking::Account::BalanceUpdated.last
 
@@ -51,7 +51,7 @@ describe Banking::Account::ApplyTransactionReactor do
         expect(event.data["status"]).to eq(Banking::Transaction::APPLIED)
       end
 
-      it "sets reactor name as the event source" do
+      it "sets calculator name as the event source" do
         subject
         event = Events::Banking::Transaction::StatusUpdated.last
 

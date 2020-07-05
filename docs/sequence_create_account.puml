@@ -1,0 +1,24 @@
+@startuml
+
+!include styles.puml
+
+title Create Account Happy Path 
+
+participant CreateAccount << Command >>
+participant AccountCreated << Event >>
+participant ValidatePendingAccount << Reactor >>
+participant UpdateAccountStatus << Command >>
+participant AccountStatusUpdated << Event >>
+
+CreateAccount -> AccountCreated
+note right of CreateAccount
+    Default status 
+    is pending.
+end note
+activate CreateAccount
+    ValidatePendingAccount -->> AccountCreated : Listen to
+    ValidatePendingAccount -> UpdateAccountStatus
+    UpdateAccountStatus -> AccountStatusUpdated : Set status to opened
+deactivate CreateAccount
+
+@enduml

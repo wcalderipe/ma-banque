@@ -25,13 +25,4 @@ skinparam sequence {
     ParticipantBackgroundColor<< Reactor >> LIGHT_PURPLE
 }
 
-skinparam usecase {
-    BorderColor GREY
-    ArrowColor GREY
-
-    BackgroundColor<< Command >> LIGHT_BLUE
-    BackgroundColor<< Event >> LIGHT_GREEN
-    BackgroundColor<< Reactor >> LIGHT_PURPLE
-}
-
 @enduml

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Banking::Account::CalculateBalanceReactor do
+describe Banking::Account::ApplyTransactionReactor do
   include EventSource::TestHelper
 
   before(:each) { prevent_event_dispatch }

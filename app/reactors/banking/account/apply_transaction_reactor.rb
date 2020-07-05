@@ -1,4 +1,4 @@
-class Banking::Account::CalculateBalanceReactor
+class Banking::Account::ApplyTransactionReactor
   def self.call(event)
     return nil unless event.tx.approved?
 

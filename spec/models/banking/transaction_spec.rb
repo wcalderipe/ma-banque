@@ -8,7 +8,7 @@ describe Banking::Transaction, type: :model do
     context "defaults" do
       it {
         is_expected.to have_attributes(
-                         balance: 0,
+                         amount: 0,
                          status: Banking::Transaction::PENDING
                        )
       }

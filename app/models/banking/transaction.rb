@@ -1,7 +1,7 @@
 class Banking::Transaction < ApplicationRecord
   attribute :status, :string
   attribute :kind, :string
-  attribute :balance, :decimal
+  attribute :amount, :decimal
 
   belongs_to :account
 

@@ -15,7 +15,7 @@ FactoryBot.define do
   # Intetionally doesn't create an account together to enforce
   # dependency clarity in the tests.
   factory :transaction, class: Banking::Transaction do
-    balance { 0 }
+    amount { 0 }
     status { Banking::Transaction::PENDING }
 
     trait :credit do

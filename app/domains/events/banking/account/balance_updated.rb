@@ -11,10 +11,10 @@ class Events::Banking::Account::BalanceUpdated < Events::Banking::Account::BaseE
   end
 
   private def credit(account, tx)
-    account.balance + tx.balance
+    account.balance + tx.amount
   end
 
   private def debit(amount, tx)
-    account.balance - tx.balance
+    account.balance - tx.amount
   end
 end

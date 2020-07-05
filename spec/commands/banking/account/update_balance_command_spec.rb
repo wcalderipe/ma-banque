@@ -9,7 +9,7 @@ describe Banking::Account::UpdateBalanceCommand do
     build(
       :transaction, :approved, :credit,
       account: account,
-      balance: 100
+      amount: 100
     )
   end
 
@@ -33,7 +33,7 @@ describe Banking::Account::UpdateBalanceCommand do
       create(
         :transaction, :approved, :debit,
         account: account,
-        balance: 50
+        amount: 50
       )
     end
 
@@ -49,7 +49,7 @@ describe Banking::Account::UpdateBalanceCommand do
       build(
         :transaction, :applied, :credit,
         account: account,
-        balance: 100
+        amount: 100
       )
     end
 

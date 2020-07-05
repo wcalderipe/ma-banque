@@ -11,7 +11,7 @@ describe Banking::Transaction::CreateCommand do
     described_class.call(
       account: account,
       kind: Banking::Transaction::CREDIT,
-      balance: 99,
+      amount: 99,
       metadata: { source: "test" }
     )
   end

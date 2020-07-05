@@ -3,16 +3,18 @@ class Events::Banking::Account::BalanceUpdated < Events::Banking::Account::BaseE
 
   # TODO:
   # - Reject non-approved tx
-  # - Update tx status to applied
   # - Don't apply twice the same tx
-  # - Debit tx
   def apply(account)
-    account.balance = credit(account, tx)
+    account.balance = tx.credit? ? credit(account, tx) : debit(account, tx)
 
     account
   end
 
   private def credit(account, tx)
-    account.balance += tx.balance
+    account.balance + tx.balance
+  end
+
+  private def debit(amount, tx)
+    account.balance - tx.balance
   end
 end

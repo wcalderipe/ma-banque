@@ -2,17 +2,17 @@
 
 !include styles.puml
 
-title Create Account Happy Path 
+title Create Account Happy Path
 
 participant CreateAccount << Command >>
 participant AccountCreated << Event >>
-participant ValidatePendingAccount << Reactor >>
+participant ValidatePendingAccount << Calculator >>
 participant UpdateAccountStatus << Command >>
 participant AccountStatusUpdated << Event >>
 
 CreateAccount -> AccountCreated
 note right of CreateAccount
-    Default status 
+    Default status
     is pending.
 end note
 activate CreateAccount

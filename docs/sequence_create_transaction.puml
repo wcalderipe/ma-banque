@@ -6,10 +6,10 @@ title Create Transaction Happy Path
 
 participant CreateTransaction << Command >>
 participant TransactionCreated << Event >>
-participant ValidatePendingTransaction << Reactor >>
+participant ValidatePendingTransaction << Calculator >>
 participant UpdateTransactionStatus << Command >>
 participant TransactionStatusUpdated << Event >>
-participant CalculateAccountBalance << Reactor >>
+participant CalculateAccountBalance << Calculator >>
 participant UpdateAccountBalance << Command >>
 participant AccountBalanceUpdated << Event >>
 
@@ -29,7 +29,7 @@ activate CreateTransaction
     CalculateAccountBalance -> UpdateAccountBalance
     UpdateAccountBalance -> AccountBalanceUpdated : Credit $100 in the account
 
-    CalculateAccountBalance -> UpdateTransactionStatus 
+    CalculateAccountBalance -> UpdateTransactionStatus
     UpdateTransactionStatus -> TransactionStatusUpdated : Set transaction\nsatus to applied
 deactivate CreateTransaction
 

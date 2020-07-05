@@ -8,6 +8,7 @@
 !define LIGHT_GREEN #d9ead3
 !define LIGHT_PURPLE #d9d2e9
 !define LIGHT_YELLOW #fff2cc
+!define LIGHT_ORANGE #fce5cd
 
 skinparam note {
     BackgroundColor LIGHT_GREY
@@ -16,6 +17,7 @@ skinparam note {
 
 skinparam sequence {
     LifeLineBorderColor GREY
+    ArrowColor GREY
 
     ParticipantBorderColor GREY
     ParticipantBackgroundColor LIGHT_YELLOW
@@ -23,6 +25,7 @@ skinparam sequence {
     ParticipantBackgroundColor<< Command >> LIGHT_BLUE
     ParticipantBackgroundColor<< Event >> LIGHT_GREEN
     ParticipantBackgroundColor<< Reactor >> LIGHT_PURPLE
+    ParticipantBackgroundColor<< Calculator >> LIGHT_ORANGE
 }
 
 @enduml

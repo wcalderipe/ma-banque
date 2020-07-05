@@ -3,8 +3,11 @@ class Banking::Account::UpdateBalanceCommand
 
   attributes :tx, :metadata
 
-  # TODO: Default tx balance to zero instead of nil
   private def build_event
+    if tx.applied?
+      raise Banking::TransactionAlreadyAppliedError.new()
+    end
+
     Events::Banking::Account::BalanceUpdated.new(
       account: tx.account,
       tx: tx,

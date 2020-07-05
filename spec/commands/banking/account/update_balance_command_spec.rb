@@ -43,4 +43,20 @@ describe Banking::Account::UpdateBalanceCommand do
       }.to change { account.reload.balance }.to(0)
     end
   end
+
+  context "when transaction is applied" do
+    let(:tx) do
+      build(
+        :transaction, :applied, :credit,
+        account: account,
+        balance: 100
+      )
+    end
+
+    it "raises an error" do
+      expect {
+        subject
+      }.to raise_error(Banking::TransactionAlreadyAppliedError)
+    end
+  end
 end
